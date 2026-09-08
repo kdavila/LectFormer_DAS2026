@@ -538,11 +538,11 @@
             "TextDetection": {
                 "Dataset": {
                     "TrainImagesPath": "../data/ICDAR2019_LSVT/sub_train_images",
-                    "TrainMasksPath": "../datas/ICDAR2019_LSVT/sub_train_masks",
+                    "TrainMasksPath": "../data/ICDAR2019_LSVT/sub_train_masks",
                     "ValidImagesPath": "../data/ICDAR2019_LSVT/sub_valid_images",
                     "ValidMasksPath": "../data/ICDAR2019_LSVT/sub_valid_masks",
                     "DebugImagesPath": "../data/ICDAR2019_LSVT/debug_images",
-                    "Preload": false    ,
+                    "Preload": false,
                     "Augmentations": {
                         "Flip": {
                             "Chance": 0.5
@@ -615,9 +615,13 @@
                         "ReductionRatio": 0.1,
                         "MaxReductions": 2
                     },
+                    "LossEMA": {
+                        "Enabled": false,
+                        "Alpha": 0.9
+                    },
                     "MaxEpochs": 300,
                     "BatchSize": 16,
-                    "GradAccumulateStep": 4,
+                    "GradAccumulateStep": 1,
                     "AugmentationsOnValidation": false,
                     "LoaderWorkers": 4,
                     "PersistentWorkers": false,

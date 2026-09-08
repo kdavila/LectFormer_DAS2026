@@ -248,29 +248,6 @@ class FCN_AutoEncoder(nn.Module):
         self.encoder = FCN_Encoder(channels, n_conv_down_1, n_conv_down_2, n_conv_down_3, n_conv_down_4, n_conv_down_5,
                                    kernel_size, activation, use_double_blocks)
 
-        """
-        if self.__use_middle_block:
-            # using a middle conv. block
-            self.mid_block = nn.Sequential(
-                nn.Conv2d(n_conv_down_5, mid_block, stride=1, kernel_size=kernel_size, padding=padding),
-                mid_first_norm,
-                activation,
-                nn.Conv2d(mid_block, mid_block, stride=1, kernel_size=kernel_size, padding=padding),
-                mid_second_norm,
-                activation,
-            )
-            nn.init.xavier_normal_(self.mid_block[0].weight)
-            nn.init.xavier_normal_(self.mid_block[3].weight)
-            nn.init.constant_(self.mid_block[0].bias, 0.0)
-            nn.init.constant_(self.mid_block[3].bias, 0.0)
-
-            dec_in_features = mid_block
-        else:
-            # not using a middle block ...
-            self.mid_block = None
-            dec_in_features = n_conv_down_5
-        """
-
         self.decoder = FCN_Decoder(n_conv_down_1, n_conv_down_2, n_conv_down_3, n_conv_down_4, n_conv_down_5, mid_block,
                                    n_upsample_5, n_conv_up_5, n_upsample_4, n_conv_up_4, n_upsample_3, n_conv_up_3,
                                    n_upsample_2, n_conv_up_2, n_upsample_1, n_conv_up_1, kernel_size, activation,
