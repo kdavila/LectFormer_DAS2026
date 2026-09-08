@@ -272,7 +272,7 @@
                     },
                     "MaxEpochs": 200,
                     "BatchSize": 16,
-                    "GradAccumulateStep": 2,
+                    "GradAccumulateStep": 1,
                     "AugmentationsOnValidation": true,
                     "LoaderWorkers": 4,
                     "PersistentWorkers": false,
