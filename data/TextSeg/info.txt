@@ -1,0 +1,1 @@
+Place the TextSeg dataset here. It needs to be split using the data preparation scripts provided. 

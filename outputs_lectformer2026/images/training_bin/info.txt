@@ -1,0 +1,1 @@
+Debug Images from different Stage 3 training scripts (Lecture Frames) will be saved here by default

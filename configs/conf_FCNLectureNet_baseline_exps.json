@@ -1,0 +1,414 @@
+{
+    "LectureNet": {
+        "General": {
+            "Device": "cuda:0",
+            "OutputPath": "../outputs_lectformer2026"
+        },
+        "LectureDataset": {
+            "DataBasePath": "../data/lecturemath_v2/db_LectureMath.xml"
+        },
+        "Annotation": {
+            "Source": {
+                "VideoBased": false,
+                "VideoPath": "../data/lecturemath_v2/videos"
+            },
+            "FrameExport": {
+                "Path": "../outputs_lectformer2026/LectureMath_VOC",
+                "Format": "jpg",
+                "Quality": 25,
+                "FramesPerSecond": 6.0
+            },
+            "KeyFrameAnnotator": {
+                "BinaryThresholdLogs": "gt_bin_thresholds_log.dat"
+            }
+        },
+        "Network": {
+            "Filters": {
+                "ConvDown_1": 48,
+                "ConvDown_2": 96,
+                "ConvDown_3": 192,
+                "ConvDown_4": 384,
+                "ConvDown_5": 768,
+                "Middle": 768,
+                "Upsample_5": 384,
+                "ConvUp_5": 384,
+                "Upsample_4": 192,
+                "ConvUp_4": 192,
+                "Upsample_3": 96,
+                "ConvUp_3": 96,
+                "Upsample_2": 48,
+                "ConvUp_2": 48,
+                "Upsample_1": 32,
+                "ConvUp_1": 32,
+                "MainKernel": 3,
+                "PixelFeatures_1": 32,
+                "PixelFeatures_2": 16,
+                "PixelKernel": 7
+            },
+            "Activation": {
+                "Type": "GELU",
+                "Parameters": {
+                    "__commment": "This parameter is used by LeakyReLU",
+                    "Slope": 0.2
+                }
+            }
+        },
+        "Evaluation": {
+            "SaveBinary": {
+                "Enabled": true,
+                "Path": "eval_images/LectureNet_KF_BIN"
+            }
+        },
+        "Training": {
+            "CropSize": {
+                "Width": 256,
+                "Height": 256
+            },
+            "Binarization": {
+                "Dataset": {
+                    "TrainDatasetName": "ICDAR26_training",
+                    "ValidDatasetName": "ICDAR26_validation",
+                    "DebugImagesPath": "../data/lecturemath_v2/debug_images",
+                    "Preload": true,
+                    "Augmentations": {
+                        "Flip": {
+                            "Chance": 0.5
+                        },
+                        "ColorInvert": {
+                            "Chance": null
+                        },
+                        "ColorChange":  {
+                            "Chance": 0.5
+                        },
+                        "LuminosityChange": {
+                            "Chance": 0.5
+                        },
+                        "GaussianNoise": {
+                            "Chance": 0.25,
+                            "Level": 15.0
+                        },
+                        "Zoom": {
+                            "Chance": 0.5,
+                            "Min": 0.8,
+                            "Max": 1.25
+                        },
+                        "Rotation": {
+                            "Chance": 0.5,
+                            "Max": 15
+                        },
+                        "Compression": {
+                            "Chance": 0.50,
+                            "MinQuality": 0.25,
+                            "MaxQuality": 0.75
+                        }
+                    }
+                },
+                "Crops": {
+                    "RemoveEmptyBorders": false,
+                    "MinForeground": null
+                },
+                "Masks" : {
+                    "Expansion": 15,
+                    "WeightExpansion": 1,
+                    "WeightForegroundExtra": 1.0
+                },
+                "Optimization": {
+                    "Optimizer": {
+                        "Algorithm": "ADAMW",
+                        "Betas": [0.9, 0.99],
+                        "WeightDecay": 0.0001
+                    },
+                    "Losses": {
+                        "Weights": {
+                            "Binarization": 10.0,
+                            "TextDetection": 1.0,
+                            "Background": 1.0
+                        },
+                        "Background": {
+                            "Perceptual": {
+                                "Weighted": true,
+                                "WeightText": 1.0,
+                                "WeightBackground": 0.155
+                            },
+                            "L1" : {
+                                "WeightText": 1.0,
+                                "WeightBackground": 0.155
+                            }
+                        }
+                    },
+                    "LearningRate": {
+                        "Warmup": {
+                            "_comment" : "Types available: 'None', 'Callback'",
+                            "Type": "Callback",
+                            "Epochs": 50
+                        },
+                        "Initial": 0.0001,
+                        "MaxFailures": 50,
+                        "ReductionRatio": 0.1,
+                        "MaxReductions": 2
+                    },
+                    "LossEMA": {
+                        "Enabled": true,
+                        "Alpha": 0.9
+                    },
+                    "SamplingSchedule": {
+                        "DifficultRatio": 0.5,
+                        "MinDifficulty": 0.0,
+                        "MaxDifficulty": 0.1,
+                        "IncreaseValue": 0.01,
+                        "IncreasePatiencePercentage": 0.25
+                    },
+                    "MaxEpochs": 2000,
+                    "BatchSize": 16,
+                    "GradAccumulateStep": 1,
+                    "AugmentationsOnValidation": false,
+                    "BackgroundClassWeight": null,
+                    "LoaderWorkers": 4,
+                    "PersistentWorkers": false,
+                    "CheckPoints": {
+                        "Frequency": 10,
+                        "Save": true,
+                        "Prefix": "models/LectureNet_TRAINED_BIN.chkpt"
+                    },
+                    "CompileModel": true,
+                    "UseAdaptiveMixedPrecision": false
+                },
+                "Debug": {
+                    "SaveImages": true,
+                    "Frequency": 5,
+                    "SavePrefix": "images/training_bin/bin_"
+                },
+                "PretrainedModel": {
+                    "LoadWeights": true,
+                    "LoadComplete": true,
+                    "Paths": {
+                        "Complete": "../outputs_lectformer2026/models/FCNLectureNet_PRETRAINED_Stage2.dat",
+                        "Encoder":  "../outputs_lectformer2026/models/FCNLectureNet_PRETRAINED_Stage1.encoder.dat",
+                        "Decoder":  "../outputs_lectformer2026/models/FCNLectureNet_PRETRAINED_Stage1.decoder.dat"
+                    }
+                },
+                "LogFile": "logs/training_binarization_log.txt",
+                "OutputFile": "models/FCNLectureNet_TRAINED_BIN.dat"
+            }
+        },
+        "Pretraining": {
+            "Reconstruction": {
+                "Dataset": {
+                    "TrainImagesPath": "../data/COCO2017/train",
+                    "ValidImagesPath": "../data/COCO2017/valid",
+                    "DebugImagesPath": "../data/COCO2017/debug",
+                    "Preload": false,
+                    "Augmentations": {
+                        "Flip": {
+                            "Chance": 0.5
+                        },
+                        "ColorInvert": {
+                            "Chance": 0.5
+                        },
+                        "ColorChange":  {
+                            "Chance": 0.5
+                        },
+                        "LuminosityChange": {
+                            "Chance": 0.125
+                        },
+                        "GaussianNoise": {
+                            "Chance": 0.20,
+                            "Level": 5.0
+                        },
+                        "Zoom": {
+                              "Chance": 0.5,
+                              "Min": 0.80,
+                              "Max": 1.25
+                          },
+                          "Rotation": {
+                              "Chance": 0.5,
+                              "Max": 60
+                          },
+                          "Compression": {
+                              "Chance": null,
+                              "MinQuality": null,
+                              "MaxQuality": null
+                          }
+                    }
+                },
+                "Target": {
+                    "__comment_1": "types supported: None, Raw (original image), Mean (Blur), Gaussian (Blur), Median (Blur), inpaint (requires masked)",
+                    "__comment_2": "Original LectureNet paper: 'Median' with FilterK=35, not masked",
+                    "_Type": "Raw",
+                    "Type": "Inpaint",
+                    "FilterK": 3,
+                    "__comment_3": "only supported when text mask is available",
+                    "Masked": true
+                },
+                "AutoEncoder": {
+                    "TargetType": "Raw",
+                    "FeatureMasking": 0.75,
+                    "Laplacian": {
+                        "Enabled": false,
+                        "_Levels": 5,
+                        "Levels": null
+                    }
+                },
+                "Optimization": {
+                    "Optimizer": {
+                        "Algorithm": "ADAMW",
+                        "Betas": [0.9, 0.99],
+                        "WeightDecay": 0.0001
+                    },
+                    "LearningRate": {
+                        "Warmup": {
+                            "_comment" : "Types available: 'None', 'Callback'",
+                            "Type": "None",
+                            "Epochs": 0
+                        },
+                        "Initial": 0.0001,
+                        "MaxFailures": 5,
+                        "ReductionRatio": 0.1,
+                        "MaxReductions": 2
+                    },
+                    "LossEMA": {
+                        "Enabled": false,
+                        "Alpha": 0.9
+                    },
+                    "MaxEpochs": 200,
+                    "BatchSize": 16,
+                    "GradAccumulateStep": 2,
+                    "AugmentationsOnValidation": true,
+                    "LoaderWorkers": 4,
+                    "PersistentWorkers": false,
+                    "CheckPoints": {
+                        "Save": true,
+                        "Frequency": 1,
+                        "Prefix": "models/FCNLectureNet_PRETRAINED_REC.chkpt"
+                    }
+                },
+                "Debug": {
+                    "SaveImages": true,
+                    "SavePrefix": "images/pretraining_rec/rec_"
+                },
+                "LogFile": "logs/pretraining_reconstruction_log.txt",
+                "OutputFile":"models/FCNLectureNet_PRETRAINED_REC.dat"
+            },
+            "TextDetection": {
+                "Dataset": {
+                    "TrainImagesPath": "../data/ICDAR2019_LSVT/sub_train_images",
+                    "TrainMasksPath": "../datas/ICDAR2019_LSVT/sub_train_masks",
+                    "ValidImagesPath": "../data/ICDAR2019_LSVT/sub_valid_images",
+                    "ValidMasksPath": "../data/ICDAR2019_LSVT/sub_valid_masks",
+                    "DebugImagesPath": "../data/ICDAR2019_LSVT/debug_images",
+                    "Preload": false,
+                    "Augmentations": {
+                        "Flip": {
+                            "Chance": 0.5
+                        },
+                        "ColorInvert": {
+                            "Chance": 0.5
+                        },
+                        "ColorChange":  {
+                            "Chance": 0.5
+                        },
+                        "LuminosityChange": {
+                            "Chance": 0.125
+                        },
+                        "GaussianNoise": {
+                            "Chance": 0.20,
+                            "Level": 5.0
+                        },
+                        "Zoom": {
+                            "Chance": 0.5,
+                            "Min": 0.80,
+                            "Max": 1.25
+                        },
+                        "Rotation": {
+                            "Chance": 0.5,
+                            "Max": 60
+                        },
+                        "Compression": {
+                            "Chance": null,
+                            "MinQuality": null,
+                            "MaxQuality": null
+                        }
+                    }
+                },
+                "Masks" : {
+                    "WeightExpansion": 1,
+                    "WeightForegroundExtra": 1.0
+                },
+                "Optimization": {
+                    "Optimizer": {
+                        "Algorithm": "ADAMW",
+                        "Betas": [0.9, 0.99],
+                        "WeightDecay": 0.0001
+                    },
+                    "Losses": {
+                        "Weights": {
+                            "Binarization": 1.0,
+                            "TextDetection": 1.0,
+                            "Background": 1.0
+                        },
+                        "Background": {
+                            "Perceptual": {
+                                "Weighted": true,
+                                "WeightText": 1.0,
+                                "WeightBackground": 0.155
+                            },
+                            "L1" : {
+                                "WeightText": 1.0,
+                                "WeightBackground": 0.155
+                            }
+                        }
+                    },
+                    "LearningRate": {
+                        "Warmup": {
+                            "_comment" : "Types available: 'None', 'Callback'",
+                            "Type": "None",
+                            "Epochs": 0
+                        },
+                        "Initial": 0.0001,
+                        "MaxFailures": 5,
+                        "ReductionRatio": 0.1,
+                        "MaxReductions": 2
+                    },
+                    "MaxEpochs": 300,
+                    "BatchSize": 16,
+                    "GradAccumulateStep": 2,
+                    "AugmentationsOnValidation": false,
+                    "LoaderWorkers": 4,
+                    "PersistentWorkers": false,
+                    "CheckPoints": {
+                        "Save": true,
+                        "Prefix": "models/LectureNet_PRETRAINED_TEXT.chkpt"
+                    },
+                    "CompileModel": true,
+                    "UseAdaptiveMixedPrecision": false
+                },
+                "Debug": {
+                    "SaveImages": true,
+                    "SavePrefix": "images/pretraining_txt/txt_"
+                },
+                "PretrainedModel": {
+                    "LoadWeights": true,
+                    "LoadComplete": false,
+                    "Paths": {
+                        "_note": "Complete here does NOT make sense. Use it only if you know what you are doing!",
+                        "_note2": "Stage 1 trains an Auto-Encoder. Stage 2 should load the parts only",
+                        "Complete": "../outputs_lectformer2026/models/FCNLectureNet_PRETRAINED_Stage2.dat",
+                        "Encoder":  "../outputs_lectformer2026/models/FCNLectureNet_PRETRAINED_Stage1.encoder.dat",
+                        "Decoder":  "../outputs_lectformer2026/models/FCNLectureNet_PRETRAINED_Stage1.decoder.dat"
+                    }
+                },
+                "LogFile": "logs/pretraining_text_detection_log.txt",
+                "OutputFile": "models/FCNLectureNet_PRETRAINED_TXT.dat",
+                "Evaluation": {
+                    "ImagesPath": "../data/ICDAR2019_LSVT/sub_valid_images",
+                    "MasksPath": "../data/ICDAR2019_LSVT/sub_valid_masks",
+                    "BinarizationThreshold": 128,
+                    "IOU": {
+                        "Thresholds": [0.5, 0.75, 0.90]
+                    }
+
+                }
+            }
+        }
+    }
+}

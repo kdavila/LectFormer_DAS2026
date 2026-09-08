@@ -1,0 +1,1 @@
+Place the ICDAR 2019 LSVT dataset here. Only the original Training (labeled) and validation splits were used.  

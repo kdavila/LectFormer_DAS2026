@@ -1,0 +1,1 @@
+Place the Total-Text dataset here. The training dataset needs to be split into training/validation using the data preparation scripts provided. 

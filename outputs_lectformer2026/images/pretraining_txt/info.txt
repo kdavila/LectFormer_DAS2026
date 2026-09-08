@@ -1,0 +1,1 @@
+Debug Images from different Stage 2 training scripts (Text Detection and Deletion) will be saved here by default
