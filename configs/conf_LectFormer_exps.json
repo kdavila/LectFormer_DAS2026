@@ -268,7 +268,7 @@
                     "CheckPoints": {
                         "Frequency": 10,
                         "Save": true,
-                        "Prefix": "models/LectureNet_TRAINED_BIN.chkpt"
+                        "Prefix": "models/LectFormer_TRAINED_BIN.chkpt"
                     },
                     "CompileModel": true,
                     "UseAdaptiveMixedPrecision": false
@@ -296,7 +296,7 @@
             "TextSegmentation": {
                 "Dataset": {
                     "TrainImagesPath": "../data/TextSeg/splits/train/img",
-                    "TrainMasksPath": "../data/TextSeg/splits/rain/masks",
+                    "TrainMasksPath": "../data/TextSeg/splits/train/masks",
                     "ValidImagesPath": "../data/TextSeg/splits/val/img",
                     "ValidMasksPath": "../data/TextSeg/splits/val/masks",
                     "DebugImagesPath": "../data/TextSeg/splits/debug_images",
@@ -392,7 +392,7 @@
                     },
                     "MaxEpochs": 2000,
                     "BatchSize": 16,
-                    "GradAccumulateStep": 4,
+                    "GradAccumulateStep": 1,
                     "AugmentationsOnValidation": false,
                     "LoaderWorkers": 2,
                     "PersistentWorkers": true,
@@ -411,7 +411,7 @@
                 },
                 "PretrainedModel": {
                     "LoadWeights": true,
-                    "LoadComplete": true,
+                    "LoadComplete": false,
                     "Paths": {
                         "Complete": "../outputs_lectformer2026/models/LectFormer_Shifted_Inter_7x7_PRETRAINED_Stage2.dat",
                         "Encoder":  "../outputs_lectformer2026/models/LectFormerAE_Shifted_Inter_7x7_PRETRAINED_Stage1.encoder.dat",
@@ -420,7 +420,7 @@
                     }
                 },
                 "AblationParts" : {
-                    "PretrainingFeatures": 4,
+                    "PretrainingFeatures": 3,
                     "HeadsSimple": 2
                 },
                 "LogFile": "logs/ablation_text_detection_log.txt",

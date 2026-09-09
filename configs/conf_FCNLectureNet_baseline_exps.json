@@ -168,7 +168,7 @@
                     "CheckPoints": {
                         "Frequency": 10,
                         "Save": true,
-                        "Prefix": "models/LectureNet_TRAINED_BIN.chkpt"
+                        "Prefix": "models/FCNLectureNet_TRAINED_BIN.chkpt"
                     },
                     "CompileModel": true,
                     "UseAdaptiveMixedPrecision": false
@@ -382,7 +382,7 @@
                     "CheckPoints": {
                         "Save": true,
                         "Frequency": 1,
-                        "Prefix": "models/LectureNet_PRETRAINED_TEXT.chkpt"
+                        "Prefix": "models/FCNLectureNet_PRETRAINED_TEXT.chkpt"
                     },
                     "CompileModel": true,
                     "UseAdaptiveMixedPrecision": false
