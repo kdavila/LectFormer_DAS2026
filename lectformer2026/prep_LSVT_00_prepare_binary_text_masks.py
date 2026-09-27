@@ -19,6 +19,7 @@ def main():
     json_filename = sys.argv[1]
     img_dir = sys.argv[2]
     out_dir = sys.argv[3]
+    os.makedirs(out_dir, exist_ok=True)
 
     with open(json_filename, "r", encoding="utf-8") as in_file:
         all_gt = json.load(in_file)
@@ -33,6 +34,11 @@ def main():
         # load image ...
         img_filename = img_dir + "/" + img_id + ".jpg"
         img = cv2.imread(img_filename)
+        
+        # skip missing images
+        if img is None:
+            print(f"Image not found, skipping: {img_filename}")
+            continue
 
         if img.shape[0] < 256 or img.shape[1] < 256:
             count_small += 1
